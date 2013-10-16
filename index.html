@@ -1,9 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" media="screen" href="" />
-    <script src=""></script>
-</head>
+    <link rel="stylesheet" href="lib/css/reveal.min.css">
+    <link rel="stylesheet" href="lib/css/crocodoc.viewer.css">
+    <link rel="stylesheet" href="lib/css/reveal.default.css" id="theme">
+    <link rel="stylesheet" href="css/slides.css">
 <body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>SVG + HTML !== &hearts;</h1>
+            </section>
+            <section>
+                The Box View API (formerly Crocodoc) is a service for generating portable, web-viewable versions of files
+            </section>
+            <section>
+                We combine three web standards to render files:
+                <p class="logos">
+                <img class="fragment" src="images/html5.svg" />
+                <img class="fragment" src="images/css3.svg" />
+                <img class="fragment" src="images/svg.svg" />
+                </p>
+            </section>
+            <section>
+                <h2>Why SVG?</h2>
+
+                <p class="fragment" data-markdown>*Can't you do everything with HTML + CSS?*</p>
+            </section>
+            <section>
+                <h2>Why SVG?</h2>
+
+                <!-- might break this out into different sections -->
+                <ul>
+                    <li class="fragment">HTML + CSS alone does not provide everything needed to render documents</li>
+                    <li class="fragment">Converted assets are be standard, portable, and lightweight</li>
+                    <li class="fragment">Rendering fidelity is incredibly high</li>
+                </ul>
+            </section>
+            <section>
+                <h2>Inline SVG FTW!</h2>
+                <p data-markdown>Inline SVG is part of the [HTML 5 spec](http://www.w3.org/html/wg/drafts/html/master/single-page.html#svg)!</p>
+                <div data-svg="assets/example-1/page-1.svg"></div>
+            </section>
+            <section data-demo="viewer-inline" class="demo-viewer"></section>
+            <section data-demo="viewer-object" class="demo-viewer"></section>
+            <section data-demo="object-vs-inline">
+                <h2>Object VS Inline</h2>
+                <div class="demo-container"></div>
+                <button class="">Reload</button>
+            </section>
+        </div>
+    </div>
+
+    <script src="lib/js/jquery.min.js"></script>
+    <script src="lib/js/head.min.js"></script>
+    <script src="lib/js/reveal.min.js"></script>
+    <script src="lib/js/crocodoc.viewer.js"></script>
+    <script src="js/data-svg.js"></script>
+    <script src="js/slides.js"></script>
 </body>
 </html>

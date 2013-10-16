@@ -1,0 +1,27 @@
+
+.logos img {
+    height: 300px;
+    vertical-align: middle;
+}
+
+.reveal *[data-svg], .reveal object {
+    width: 450px;
+    display: inline-block;
+}
+.reveal *[data-svg] svg {
+    position: static;
+}
+
+.demo-viewer {
+    height: 660px
+}
+.demo-viewer .crocodoc-page {
+    padding: 20px 100px;
+}
+.demo-viewer {
+    background: black;
+}
+
+.crocodoc-viewer {
+    padding: 0 !important;
+}
