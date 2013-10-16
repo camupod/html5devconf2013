@@ -4,11 +4,13 @@
     vertical-align: middle;
 }
 
-.reveal *[data-svg], .reveal object {
-    width: 450px;
+.reveal *[data-svg-inline],
+.reveal *[data-svg-iframe] {
     display: inline-block;
 }
-.reveal *[data-svg] svg {
+/* remove position absolute on crocodoc svg */
+.reveal *[data-svg-inline] svg,
+.reveal *[data-svg-iframe] svg {
     position: static;
 }
 
@@ -24,4 +26,20 @@
 
 .crocodoc-viewer {
     padding: 0 !important;
+}
+section[data-demo="iframe-vs-inline"] .demo-container div {
+    overflow: auto;
+    height: 574px;
+    vertical-align: bottom;
+}
+section[data-demo="iframe-vs-inline"] .demo-container div * {
+    width: 450px !important;
+    height: 574px !important;
+    padding-bottom: 50px;
+    background: white;
+    vertical-align: top;
+}
+section[data-demo="iframe-vs-inline"] .demo-container iframe {
+    max-width: none;
+    max-height: none;
 }

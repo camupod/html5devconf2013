@@ -53,7 +53,7 @@ function viewerDemo(cfg) {
 
 Demo.add('viewer-inline', function () {
     return viewerDemo({
-        url: '/crocodoc/docviewer/testing/article-trends',
+        url: '/crocodoc/docviewer/testing/article-realestate',
         embedStrategy: 3,
         enableTextSelection: false,
         zoom: Crocodoc.ZOOM_FIT_HEIGHT
@@ -62,23 +62,31 @@ Demo.add('viewer-inline', function () {
 
 Demo.add('viewer-object', function () {
     return viewerDemo({
-        url: '/crocodoc/docviewer/testing/article-trends',
+        url: '/crocodoc/docviewer/testing/article-realestate',
         embedStrategy: 4,
         enableTextSelection: false,
         zoom: Crocodoc.ZOOM_FIT_HEIGHT
     });
 });
 
-Demo.add('object-vs-inline', function () {
-    var src = 'assets/article-trends/page-46.svg';
-    var $object = $('<object>').attr({
-        data: src,
-        type: 'image/svg+xml'
-    });
-    var $inline = $('<div data-svg="'+src+'">');
+Demo.add('iframe-vs-inline', function () {
+    var $el, $inline, $iframe, top,
+        src = 'assets/object-vs-inline/page-46.svg';
     return {
         init: function (el) {
-            $(el).find('.demo-container').empty().append($object, $inline);
+            top = 0;
+            $el = $(el);
+            $el.find('button.reload').on('click', this.reload);
+            this.reload();
+        },
+        destroy: function () {
+            $el.find('button.reload').off('click', this.reload);
+        },
+        reload: function () {
+            $inline = $('<div data-svg-inline="'+src+'">'),
+            $iframe = $('<div data-svg-iframe="'+src+'">');
+            $el.find('.demo-container').empty().append($iframe, $inline);
+            svgify($el[0]);
         }
-    }
+    };
 });
