@@ -3,6 +3,76 @@
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xml:space="preserve" width="100%" height="100%" viewBox="0 0 654.0 834.0">
+<script>
+    window.Timer = window.Timer || (function () {
+
+        var Timer = {
+            startTime: {},
+            stopTime: {},
+            handlers: {},
+            currentTime: function () {
+                return window.performance ? window.performance.now() : new Date().getTime();
+            },
+            start: function (label) {
+                this.startTime[label] = this.currentTime();
+            },
+            stop: function (label) {
+                this.stopTime[label] = this.currentTime();
+
+                this.trigger(label, this.getElapsed(label));
+            },
+            getElapsed: function (label) {
+                return this.stopTime[label] - this.startTime[label];
+            },
+            trigger: function (label, time) {
+                var i, l;
+                if (this.handlers[label]) {
+                    for (i = 0, l = this.handlers[label].length; l > i; ++i) {
+                        this.handlers[label][i](label, time);
+                    }
+                }
+            },
+            on: function (label, cb) {
+                if (!this.handlers[label]) {
+                    this.handlers[label] = [];
+                }
+                this.handlers[label].push(cb);
+
+                // trigger it now if available
+                if (this.stopTime[label]) {
+                    cb(label, this.getElapsed(label));
+                }
+            },
+            off: function (label, cb) {
+                var i, l;
+                if (this.handlers[label]) {
+                    for (i = 0, l = this.handlers[label].length; l > i; ++i) {
+                        if (this.handlers[label][i] === cb) {
+                            this.handlers[label].splice(i, 1);
+                        }
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('message', function (ev) {
+            var data = ev.data;
+            if (data) {
+                Timer.trigger(data.label, data.time);
+            }
+        });
+
+        return Timer;
+    })();
+    var name = location.hash.indexOf('iframe') > -1 ? '-iframe': '-inline';
+    Timer.start('svg'+name);
+
+    if (window.parent !== window) {
+        Timer.on('svg'+name, function (label, time) {
+            window.parent.postMessage({label: label, time: time}, '*');
+        });
+    }
+</script>
 <xhtml:link href="stylesheet.css" type="text/css" rel="stylesheet" />
 <style>
 .crocodoc-2jt6Qd tspan { white-space:pre; }
@@ -33,4 +103,8 @@ svg.crocodoc-2jt6Qd .f184 { font-family: "crocodoc-2jt6Qd-font-184"; } @font-fac
 <tspan x="157.69" y="154.71" textLength="58.9">(over 35 to 45)</tspan>
 <tspan x="126.18" y="168.71" textLength="51.71" class="f1582 f797" dx="0,0,0,0,0,0,0,0,0,0,-0.16,0">Post-mature </tspan>
 <tspan x="177.88" y="168.71" textLength="35.37">(over 45)</tspan></text><path d="M15 21 l-15 0 M639 21 l15 0 M15 813 l-15 0 M639 813 l15 0 M21 15 l0 -15 M21 819 l0 15 M633 15 l0 -15 M633 819 l0 15 " style="stroke:#ffffff;stroke-width:1.25;"/><path d="M15 21 l-15 0 M639 21 l15 0 M15 813 l-15 0 M639 813 l15 0 M21 15 l0 -15 M21 819 l0 15 M633 15 l0 -15 M633 819 l0 15 " style="stroke:#000000;stroke-width:0.25;"/>
+
+<script>
+    Timer.stop('svg'+name);
+</script>
 </svg>

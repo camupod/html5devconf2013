@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+    div, svg, iframe {
+        width: 450px !important;
+        height: 574px !important;
+        border: 0;
+    }
+    </style>
+</head>
+<body>
+    <h2>iframe</h2>
+    <div data-svg-iframe="assets/article-trends/page-46.svg"></div>
+    <button onclick="reloadIframe()">reload iframe</button>
+    <h2>inline</h2>
+    <div data-svg-inline="assets/article-trends/page-46.svg"></div>
+    <button onclick="reloadInline()">reload inline</button>
+
+    <script type="text/javascript">
+        // given an element, find elements with data-svg-[type] and embed them via the
+        // given type (embed method), eg., iframe, inline
+        function svgify(element, type) {
+            var embedType = {
+                iframe: function (elem) {
+                    elem.innerHTML = '';
+                    var dp = new window.DOMParser(),
+                        src = elem.dataset.svgIframe;
+                    var svgDoc = document.createElement('iframe');
+                    svgDoc.src = src;
+                    elem.appendChild(svgDoc);
+                },
+                inline: function (elem) {
+                    elem.innerHTML = '';
+                    var dp = new window.DOMParser(),
+                        src = elem.dataset.svgInline;
+                    ajax(src, function (svgText) {
+                        var svgDoc = dp.parseFromString(fixSVGText(src, svgText), 'image/svg+xml');
+                        svgDoc = document.importNode(svgDoc.documentElement, true);
+                        svgDoc.style.width = '100%';
+                        svgDoc.style.height = '100%';
+                        elem.appendChild(svgDoc);
+                    });
+                }
+            };
+
+            element = element || document;
+            if (type) {
+                svgifyType(type);
+            } else {
+                for (type in embedType) {
+                    svgifyType(type);
+                }
+            }
+
+            function svgifyType(type) {
+                [].forEach.call(element.querySelectorAll('[data-svg-'+type+']'), embedType[type]);
+            }
+
+            function fixSVGText(src, text) {
+                var baseURL = src.substring(0, src.lastIndexOf('/') + 1);
+
+                // modify urls for absolute path
+                text = text.replace(/href="([^"#:]*)"/g, function(match, group){
+                    return 'href="' + baseURL + group + '"';
+                });
+                text = text.replace(/url\(\"([^"#:]*)\"\)/g, function(match, group){
+                    return 'url("' + baseURL + group + '")';
+                });
+
+                return text;
+            }
+
+            function ajax(src, cb) {
+                var xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    cb(this.responseText);
+                };
+                xhr.open('GET', src, true);
+                xhr.send();
+            }
+        }
+
+        function reloadIframe() {
+            svgify(document.body, 'iframe');
+        }
+        function reloadInline() {
+            svgify(document.body, 'inline');
+        }
+        svgify();
+
+    </script>
+</body>
+</html>

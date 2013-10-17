@@ -14,8 +14,13 @@
     position: static;
 }
 
+.reveal section code {
+    font-size: 70%;
+    vertical-align: middle;
+}
+
 .demo-viewer {
-    height: 660px
+    height: 600px
 }
 .demo-viewer .crocodoc-page {
     padding: 20px 100px;
@@ -27,17 +32,18 @@
 .crocodoc-viewer {
     padding: 0 !important;
 }
-section[data-demo="iframe-vs-inline"] .demo-container div {
-    overflow: auto;
+section[data-demo="iframe-vs-inline"] .demo-container {
     height: 574px;
-    vertical-align: bottom;
+}
+section[data-demo="iframe-vs-inline"] .demo-container div {
+    width: 450px !important;
+    height: 574px !important;
+    margin-right: 10px;
 }
 section[data-demo="iframe-vs-inline"] .demo-container div * {
     width: 450px !important;
     height: 574px !important;
-    padding-bottom: 50px;
     background: white;
-    vertical-align: top;
 }
 section[data-demo="iframe-vs-inline"] .demo-container iframe {
     max-width: none;
