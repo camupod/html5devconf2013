@@ -9,18 +9,21 @@
     <div class="reveal">
         <div class="slides">
             <section>
-                <h1>SVG + HTML !== &hearts;</h1>
+                <h1>SVG</h1>
+
+                <p>Cameron Lakenen &ndash; Box</p>
+                <small>@lakenen</small>
             </section>
             <section>
-                The Box View API (formerly Crocodoc) is a service for generating portable, web-viewable versions of files
+                The Box View API (formerly Crocodoc) is a service for generating portable, web-viewable versions of documents
             </section>
             <section>
-                We combine three web standards to render files:
-                <p class="logos">
-                    <img class="fragment" src="images/html5.svg" />
-                    <img class="fragment" src="images/css3.svg" />
-                    <img class="fragment" src="images/svg.svg" />
-                </p>
+                We combine three web standards to render documents:
+                <div class="logos">
+                    <img class="fragment" data-fragment-index="1" src="images/html5.svg" />
+                    <span class="fragment" data-fragment-index="3"><img class="fragment grow" data-fragment-index="3" src="images/svg.svg" /></span>
+                    <img class="fragment" data-fragment-index="2" src="images/css3.svg" />
+                </div>
             </section>
             <section>
                 <h2>Why SVG?</h2>
@@ -36,29 +39,47 @@
             <section>
                 <h2>Why SVG?</h2>
 
-                <!-- might break this out into different sections -->
                 <ul>
-                    <li class="fragment">HTML + CSS alone does not provide everything needed to render documents</li>
-                    <li class="fragment">Converted assets are be standard, portable, and lightweight</li>
+                    <li class="fragment">Provides functionality not currently possible with just HTML/CSS</li>
+                    <li class="fragment">Converted assets are standard, portable, and lightweight</li>
                     <li class="fragment">Rendering fidelity is incredibly high</li>
                 </ul>
 
                 <aside class="notes">
+                    SVG provides some operations that aren't currently available with just HTML and CSS (clipping, masking, blending), though some of this functionality is on the horizon.
 
+                    Converted assets are all based on web standards, so they will just work in all standards-compliant browsers. Many other platforms are capable of interpreting and rendering SVG as well
+
+                    SVG is just XML. It's basically just a text file, so it compresses very well on the wire.
+
+                    SVG - scalable vector graphics have impeccable quality, with essentially infinite zooming that retains crispness (barring embedded rasterized images)
                 </aside>
             </section>
             <section>
-                <h2>Inline SVG FTW!</h2>
+                <h2>Inline SVG</h2>
                 <p data-markdown>Inline SVG is part of the [HTML 5 spec](http://www.w3.org/html/wg/drafts/html/master/single-page.html#svg)!</p>
-                <div data-svg-inline="assets/inline/page-1.svg"></div>
+                <div data-svg-inline="assets/inline/page-1.svg" style="height: 375px; width: 500px"></div>
+                <aside class="notes">
+                    Inline SVG is great for static content rendered into the HTML page, but that wont work here
+                </aside>
             </section>
             <section>
-                <h2>DOMParser !== inline SVG</h2>
-                <p></p>
+                <h2>Lazy-loading and inline SVG</h2>
+                <p class="fragment">Inline SVG cannot be embedded effectively in JS</p>
+                <aside class="notes">
+                    In Box document viewer, pages are loaded dynamically, making it possible to load a 1000+ page document performantly
+
+                    Inline SVG (literally HTML text with SVG baked into it)
+                </aside>
+            </section>
+            <section>
+                <h2>DOMParser !== inline SVG*</h2>
+
+                <p>DOMParser and innerHTML take a different codepath than pure inline SVG, bypassing the threaded HTML parser</p>
+
+                <small class="fragment">*at least not in Chrome/Blink</small>
 
                 <aside class="notes">
-                    Inline SVG is great for static content rendered into the HTML page, but that work work here
-
                     In order to dynamically embed SVG content, it's necessary to use DOMParser or innerHTML to insert SVG content
 
                     At least in Chrome, invoking window.DOMParser bypasses the threaded html parser in blink, which causes a synchronous parse of the SVG content
@@ -70,7 +91,7 @@
                 <div class="demo-viewer"></div>
 
                 <aside class="notes">
-
+                    This is an example document viewer that uses DOMParser to insert SVG into the DOM inline... performance is pretty bad
                 </aside>
             </section>
             <section data-demo="viewer-object">
@@ -78,7 +99,7 @@
                 <div class="demo-viewer"></div>
 
                 <aside class="notes">
-
+                    In this example, SVGs are embedded as iframes... performance is much better
                 </aside>
             </section>
             <section data-demo="iframe-vs-inline">
@@ -95,28 +116,41 @@
             <section>
                 <h2>Inline SVG and IE 9</h2>
                 <ul>
-                    <li>Maximum of 31 stylesheets (<code>&lt;link rel="stylesheet"/&gt;</code>, <code>&lt;style&gt;</code>)*</li>
-                    <li>Hack to embed SVG with JS (no <code>document.importNode</code>)</li>
+                    <li>
+                    Maximum of 31 stylesheets*<br/>
+                    <ul><li><code>&lt;link rel="stylesheet"/&gt;</code>, <code>&lt;style&gt;</code></li></ul>
+                    </li>
+                    <li>
+                    Hack to embed SVG with JS<br/>
+                    <ul><li>no <code>document.importNode</code></li></ul>
+                    </li>
                 </ul>
 
-                <small>* this has been removed in IE 10 (<a href="http://msdn.microsoft.com/en-US/library/ie/hh920762.aspx">http://msdn.microsoft.com/en-US/library/ie/hh920762.aspx</a>)</small>
+                <small>*this has been removed in IE 10 (<a href="http://msdn.microsoft.com/en-US/library/ie/hh920762.aspx">http://msdn.microsoft.com/en-US/library/ie/hh920762.aspx</a>)</small>
 
                 <aside class="notes">
-                    Each page includes a separate, page-specific style tag (although all pages reference the same external css file)
+                    In Box documents, each page includes a separate, page-specific style tag in addition to a common external css file. With inline SVG, this limit would be reached very quickly.
+
+                    There is no document.importNode in IE 9, but luckily there's a relatively simple shim for it, which involes traversing the DOM tree and essentially making a copy of each node in the tree
                 </aside>
             </section>
             <section>
                 <h2>OK, inline SVG won't work. Now what?</h2>
                 <div class="fragment">
-                <p>There are several ways to dynamically embed SVG content in HTML:</p>
-                <ul>
-                    <li class="fragment highlight-red">inline <code>&lt;svg&gt;</code> using DOMParser</li>
-                    <li><code>&lt;img&gt;</code></li>
-                    <li><code>&lt;iframe&gt;</code>, <code>&lt;object&gt;</code>, or <code>&lt;embed&gt;</code></li>
-                </ul>
+                    <p>There are several ways to embed SVG content in HTML:</p>
+                    <ul>
+                        <li class="fragment highlight-red">inline <code>&lt;svg&gt;</code> using DOMParser</li>
+                        <li><code>&lt;img&gt;</code></li>
+                        <li><code>&lt;iframe&gt;</code>, <code>&lt;object&gt;</code>, or <code>&lt;embed&gt;</code></li>
+                    </ul>
                 </div>
+
+                <aside class="notes">
+
+                </aside>
             </section>
             <section>
+                <h2>The lowly &lt;img&gt; tag</h2>
 
             </section>
             <section>

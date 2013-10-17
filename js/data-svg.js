@@ -13,12 +13,11 @@ function svgify(element, type) {
                 src = elem.dataset.svgInline;
             ajax(src, function (svgText) {
                 Timer.start('inline');
-                /*var svgDoc = dp.parseFromString(fixSVGText(src, svgText), 'image/svg+xml');
+                var svgDoc = dp.parseFromString(fixSVGText(src, svgText), 'image/svg+xml');
                 svgDoc = document.importNode(svgDoc.documentElement, true);
                 svgDoc.style.width = '100%';
                 svgDoc.style.height = '100%';
-                elem.appendChild(svgDoc);*/
-                elem.innerHTML = fixSVGText(src, svgText);
+                elem.appendChild(svgDoc);
                 Timer.stop('inline');
             });
         }

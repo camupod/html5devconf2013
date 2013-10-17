@@ -1,7 +1,17 @@
 
-.logos img {
-    height: 300px;
+.reveal section code {
+    font-size: 70%;
     vertical-align: middle;
+}
+
+.reveal section img {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.reveal section small {
+    margin-top: 50px;
 }
 
 .reveal *[data-svg-inline],
@@ -14,8 +24,13 @@
     position: static;
 }
 
-.reveal section code {
-    font-size: 70%;
+div.logos {
+    margin-top: 50px;
+}
+
+.logos img {
+    height: 300px;
+    width: 300px;
     vertical-align: middle;
 }
 
