@@ -18,8 +18,14 @@
     margin: 0.4em 0;
 }
 
-button {
-    z-index: 10000;
+.reveal section iframe,
+.reveal section img {
+    max-width: none;
+    max-height: none;
+}
+
+.crocodoc-viewer iframe {
+    pointer-events: none;
 }
 
 .reveal *[data-svg-inline],
@@ -43,7 +49,7 @@ div.logos {
 }
 
 .demo-viewer {
-    height: 600px
+    height: 600px;
 }
 .demo-viewer .crocodoc-page {
     padding: 20px 40px;
@@ -52,8 +58,27 @@ div.logos {
 .crocodoc-viewer {
     padding: 0 !important;
 }
+
+.demo-container {
+    height: 500px;
+    width: 700px;
+    text-align: center;
+}
+.demo-container.small {
+    height: 300px;
+    width: 100%;
+}
+.demo-container.small iframe,
+.demo-container.small img {
+    height: 100%;
+    margin: 0;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
 section[data-demo="iframe-vs-inline"] .demo-container {
     height: 574px;
+    width: auto;
 }
 section[data-demo="iframe-vs-inline"] .demo-container div {
     width: 450px !important;
@@ -64,10 +89,6 @@ section[data-demo="iframe-vs-inline"] .demo-container div * {
     width: 450px !important;
     height: 574px !important;
     background: white;
-}
-section[data-demo="iframe-vs-inline"] .demo-container iframe {
-    max-width: none;
-    max-height: none;
 }
 
 section.proxy-example {

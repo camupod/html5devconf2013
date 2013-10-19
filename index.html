@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="lib/css/reveal.default.css" id="theme">
     <link rel="stylesheet" href="lib/css/zenburn.css">
     <link rel="stylesheet" href="css/slides.css">
-<body>
+<body tabindex="-1">
     <div class="reveal">
         <div class="slides">
 
@@ -51,17 +51,10 @@
                 <h2>Why SVG?</h2>
 
                 <p data-markdown>*Can't you do everything with HTML + CSS?*</p>
-                <p class="fragment" data-markdown>So, why not canvas?</p>
 
                 <aside class="notes" data-markdown>
                     HTML5 is awesome, you can do so much with it!
                     Unfortunately, aside from rendering to a canvas, it's not possible to use only HTML &rarr;
-
-                    So, what about canvas?
-
-                    Canvas is an interesting option for rendering documents, but is much more complex to render and less portable
-
-                    Also, then we'd be competing directly with PDF.js :) &rarr;
                 </aside>
             </section>
             <section>
@@ -69,9 +62,9 @@
                     <script type="text/template">
                     ## Why SVG?
 
-                    * Provides functionality not available in HTML / CSS
-                    * Converted assets are standard, portable, and lightweight
-                    * Rendering fidelity is incredibly high
+                    * Functionality not available in HTML / CSS
+                    * Standard, portable, and lightweight
+                    * Incredibly high rendering fidelity
                     </script>
                 </div>
 
@@ -93,6 +86,59 @@
                     SVG - scalable vector graphics have impeccable quality, with essentially infinite zooming that retains crispness (barring embedded rasterized images)
                 </aside>
             </section>
+
+            <section>
+                <h2>Strokes and Fills</h2>
+                <iframe class="demo-container" src="assets/svg-graphics/graphics.html"></iframe>
+                <aside class="notes" data-markdown>
+                </aside>
+            </section>
+
+            <section>
+                <h2>Clipping, Masking, and Blending</h2>
+                <iframe class="demo-container" src="assets/svg-graphics/graphics-adv.html"></iframe>
+                <aside class="notes" data-markdown>
+                </aside>
+            </section>
+
+            <section data-demo="viewer-zooming">
+                <h2>Rendering Quality and Zooming</h2>
+                <div class="demo-viewer"></div>
+
+                <aside class="notes" data-markdown>
+                </aside>
+            </section>
+
+            <!-- CANVAS (maybe cut this section) -->
+            <section>
+                <div data-markdown data-fragmentize>
+                    <script type="text/template">
+                    ## Why not canvas?
+
+                    * Significantly more complex to render
+                    * Requires JavaScript (less portable)
+                    * Zooming and resizing requires full JS redraw
+
+                    </script>
+                </div>
+
+                <aside class="notes" data-markdown>
+                    So, what about canvas?
+
+                    Canvas is a really interesting option for rendering documents, but is much more complex than SVG's declarative syntax
+
+                    even though most of the time, our SVG assets are embedded dynamically using JS, it's not absolutely necessary.
+
+                    SVG can be embedded as-is without JS. Canvas implementations would necessarily require JS, and are thus less portable
+
+                    rendering to canvas requires either parsing and interpreting the document in JS or converting it to some set of operations beforehand that JS can then use to draw to a canvas.
+
+                    furthermore, zooming or resizing a canvas element would require a redraw, unlike SVG
+
+                    There are some interesting projects that render documents to Canvas, namely PDF.js, but for our purposes, SVG is a much better fit &rarr;
+                </aside>
+            </section>
+
 
             <!-- The Problem -->
 
@@ -144,11 +190,49 @@
             </section>
 
             <section>
-                <h2>Performance and Stability</h2>
+                <div data-markdown data-fragmentize>
+                    <script type="text/template">
+                    ## Performance and Stability
+
+                    * Lazyloading + scrolling and zooming performance
+                    * Crashing mobile browsers (\*cough\* iOS)
+                    </script>
+                </div>
                 <aside class="notes" data-markdown>
                     By far the biggest issue we face with SVG is performance. Some documents can be very complex, and therefore result in complex SVG files. We do as much as we can in the conversion process to reduce complexity for both file size and rendering performance reasons, but there is only so much that can be done without affecting rendering quality.
 
+                    We have to lazy-load pages in order provide a faster, more responsive user experience, and embedding SVG on the fly can cause the UI to lock up with some embed methods, so certain methods yield better UI performance than others, and I'll explain these differences in a bit
 
+                    Memory useage can vary as well with different embed methods (and lazy-loading range), and using too much memory is a sure fire way to crash mobile Safari
+
+                    I'm not going to dive too deeply into mobile in this talk, because that could be a full talk by itself :) &rarr;
+                </aside>
+            </section>
+
+            <section>
+                <h2>External Assets</h2>
+                <div class="demo-container small">
+                    <iframe src="assets/inline/page-1.svg"></iframe> <img src="assets/inline/page-1.svg" />
+                </div>
+                <p class="" data-markdown>
+                    <script type="text/template">
+                    ```svg
+                    <xhtml:link href="stylesheet.css" type="text/css" rel="stylesheet" />
+                    <defs>
+                        <image id="Image_8_1_R0zyIp" xlink:href="8.png" />
+                        <image id="Image_10_1_R0zyIp" xlink:href="10.png" />
+                    </defs>
+                    ```
+                    </script>
+                </p>
+                <aside class="notes" data-markdown>
+                    For performance reasons, converted SVG assets link to other resources (e.g, images, fonts, stylesheets)
+
+                    it is possible to base64 encode linked assets, which we do to some degree
+
+                    but although *images* are not commonly reused across pages, fonts are often used across many or all pages.
+
+                    if all necessary fonts are embedded into each individual svg file (instead of loaded in a common css file), it increases the total payload size by an unacceptable amount
                 </aside>
             </section>
 
@@ -165,9 +249,114 @@
                 <aside class="notes" data-markdown>
                     Here's a short screencast I made of our document viewer using basic object embed
 
-                    If you look closely at Chrome's chrome (hehe), you can see the loading indicator flicker like crazy while the viewer is loading pages. This is completely unacceptable behavior for our use case. &rarr;
+                    If you look closely at Chrome's *chrome* (hehe), you can see the loading indicator flicker like crazy while the viewer is loading pages. This is completely unacceptable behavior for our use case. &rarr;
                 </aside>
             </section>
+
+            <!-- embed methods -->
+
+            <section>
+                <h2>Embed Methods</h2>
+                <ul>
+                    <li class="fragment highlight-blue" data-markdown>
+                        <script type="text/template">`<img src="foo.svg">` and CSS `background-image`</script>
+                    </li>
+                    <li>inline SVG (true inline vs DOMParser)</li>
+                    <li data-markdown>
+                        <script type="text/template">`<object>`, `<iframe>`, or `<embed>`</script>
+                    </li>
+                </ul>
+
+                <aside class="notes" data-markdown>
+                    So let's talk about the different embed methods! First, let's look at the img tag
+                </aside>
+            </section>
+
+            <!-- IMG -->
+            <section>
+                <h2>The humble &lt;img&gt; tag</h2>
+                <div><img src="assets/image-example.svg" height="400"/></div>
+
+                <small><a href="http://www.schepers.cc/svg/blendups/embedding.html">http://www.schepers.cc/svg/blendups/embedding.html</a></small>
+                <aside class="notes" data-markdown>
+                    SVG is an image format after all, and &lt;img&gt; supports SVG files... the img tag even supports SVG animations!
+
+                    Even CSS property background-image supports svg!
+
+                    `&lt;img&gt;` tag supports SVG content pretty well, with the added bonus that it can be drawn to a canvas as a cache
+
+                    Complex SVG can take time to layout and paint, and caching it to a canvas can protect against layout invalidation
+                </aside>
+            </section>
+            <section>
+                <h2>&lt;img&gt; tag: no external assets</h2>
+                <p class="fragment" data-fragment-index="1">SVGs loaded via <code>&lt;img&gt;</code> won't fetch external assets</p>
+                <div class="fragment demo-container small">
+                    <img src="assets/inline/page-1.svg" />
+                </div>
+
+                <small class="fragment" data-fragment-index="1" data-markdown>https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions</small>
+
+                <aside class="notes" data-markdown>
+                    Among other things, external assets aren't loaded when embedded with img tag (for security reasons)
+                     (give an example of this)
+
+                    For performane reasons, converted SVG files reference external assets (eg, fonts, images)
+
+                    it is possible to base64 encode these assets and bake them into the SVG files
+
+                    BUT although *images* are not commonly reused across pages, documents usually use the same set of fonts across many or all pages
+
+                    if all necessary fonts were embedded into each individual svg file (instead of a common css file), it would increase the payload size by an unacceptable amount
+                </aside>
+            </section>
+            <section>
+                <h2>&lt;img&gt; tag: no external assets</h2>
+                <p>Solution: base64-encode all assets into nested data: urls</p>
+                <ul class="fragment">
+                    <li>Very complex</li>
+                    <li>Memory issues and crashing on mobile devices</li>
+                </ul>
+
+                <aside class="notes" data-markdown>
+                    we attempted to load all assets
+                    fonts, styles with ajax
+                    images with new Image() + canvas.toDataURL()
+
+                    and base64 encode (window.btoa()) them into one large data url
+
+                    this was extremely complex, and didn't seem to work very well in all browsers
+
+                    it could be explored further, but probably not work the effort
+
+                    image performance seems to be worse than iframe for some reason (though this could be remedied by caching to canvas)
+
+                    canvas has its own performance issues (re: memory usage), causes crashing on mobile
+
+                    (this is why PDF.js doesn't work well/at all on most mobile devices)
+                </aside>
+            </section>
+            <section>
+                <h2>Embed methods</h2>
+
+                <p>&lt;img&gt; is difficult at best &ndash; let's look at our other options:</p>
+
+                <ul>
+                    <li class="fragment highlight-red" data-markdown>
+                        <script type="text/template">`<img src="foo.svg">`</script>
+                    </li>
+                    <li class="fragment highlight-blue">inline SVG (true inline vs DOMParser)</li>
+                    <li data-markdown>
+                        <script type="text/template">`<object>`, `<iframe>`, or `<embed>`</script>
+                    </li>
+                </ul>
+                <aside class="notes" data-markdown>
+                    img tag won't work for us. let's take a look at our other options...
+                </aside>
+            </section>
+
+            <!-- INLINE -->
+
             <section>
                 <h2>Inline SVG</h2>
                 <p data-markdown>Inline SVG is part of the [HTML 5 spec](http://www.w3.org/html/wg/drafts/html/master/single-page.html#svg)!</p>
@@ -177,26 +366,20 @@
                 </aside>
             </section>
             <section>
-                <h2>Lazy-loading and inline SVG</h2>
-                <p class="fragment">Inline SVG cannot be embedded effectively in JS</p>
+                <h2>DOMParser !== inline SVG*</h2>
+                <p>SVG embedded with JS is not parsed asynchronously <span class="fragment" data-fragment-index="1">(yet**)</span></p>
+
+                <small>*at least not in Chrome/Blink, and likely not in any browsers currently<br/>
+                <span class="fragment" data-fragment-index="1">**<a href="http://crbug.com/308321">http://crbug.com/308321</a> and <a href="http://crbug.com/308768">http://crbug.com/308768</a></small>
                 <aside class="notes" data-markdown>
                     In Box document viewer, pages are loaded dynamically, making it possible to load a 1000+ page document performantly
 
-                    Inline SVG (literally HTML text with SVG baked into it)
-                </aside>
-            </section>
-            <section>
-                <h2>DOMParser !== inline SVG*</h2>
+                    Inline SVG (literally HTML text with SVG text baked into it) is actually very fast in most browsers
 
-                <p>DOMParser and innerHTML take a different codepath than pure inline SVG, bypassing the threaded HTML parser</p>
-
-                <small class="fragment">*at least not in Chrome/Blink</small>
-
-                <aside class="notes" data-markdown>
                     In order to dynamically embed SVG content, it's necessary to use DOMParser or innerHTML to insert SVG content
 
-                    At least in Chrome, invoking window.DOMParser bypasses the threaded html parser in blink, which causes a synchronous parse of the SVG content
-                    In fact, the threaded html parser is not exposed to JS at all!
+                    At least in Chrome, invoking window.DOMParser bypasses the threaded html parser in Blink, which causes a synchronous parse of the SVG content
+                    In fact, the threaded html parser is not exposed to JS at all, but this is something that could change in the near future - there are two chrome issues that are related to this
                 </aside>
             </section>
             <section data-demo="viewer-inline">
@@ -230,6 +413,8 @@
 
                 </aside>
             </section>
+
+            <!-- IE9 stuff.. might remove this -->
             <section>
                 <h2>Inline SVG and IE 9</h2>
                 <ul>
@@ -252,92 +437,26 @@
                 </aside>
             </section>
             <section>
-                <h2>OK, inline SVG won't work. Now what?</h2>
-                <div class="fragment">
-                    <p>There are several ways to embed SVG content in HTML:</p>
-                    <ul>
-                        <li class="fragment highlight-red">inline <code>&lt;svg&gt;</code> using DOMParser</li>
-                        <li><code>&lt;img&gt;</code></li>
-                        <li><code>&lt;iframe&gt;</code>, <code>&lt;object&gt;</code>, or <code>&lt;embed&gt;</code></li>
-                    </ul>
-                </div>
+                <h2>Embed methods</h2>
 
-                <aside class="notes" data-markdown>
-                    We've seen that inline SVG is not going to work, because the synchronous HTML parser is just too slow
+                <p>Inline SVG performance isn't quite there yet</p>
 
-                    There are several other options for embedding SVG content, so let's look at the img tag!
-                </aside>
-            </section>
-            <section>
-                <h2>The lowly &lt;img&gt; tag</h2>
-                <p class="fragment">Why not just use the &lt;img&gt; tag? SVG is an image format after all, and &lt;img&gt; supports SVG files...</p>
-
-                <aside class="notes" data-markdown>
-                    `&lt;img&gt;` tag supports SVG content pretty well, with the added bonus that it can be drawn to a canvas as a cache
-
-                    Complex SVG can take time to layout and paint, and caching it to a canvas can protect against layout invalidation
-                </aside>
-            </section>
-            <section>
-                <h2>The lowly &lt;img&gt; tag</h2>
-                <p class="fragment" data-fragment-index="1">SVGs loaded via &lt;img src="foo.svg"&gt; won't fetch external assets</p>
-
-                <small class="fragment" data-fragment-index="1" data-markdown>https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions</small>
-
-                <aside class="notes" data-markdown>
-                    Among other things, external assets aren't loaded when embedded with img tag (for security reasons)
-                     (give an example of this)
-
-                    For performane reasons, converted SVG files reference external assets (eg, fonts, images)
-
-                    it is possible to base64 encode these assets and bake them into the SVG files
-
-                    BUT although *images* are not commonly reused across pages, documents usually use the same set of fonts across many or all pages
-
-                    if all necessary fonts were embedded into each individual svg file (instead of a common css file), it would increase the payload size by an unacceptable amount
-                </aside>
-            </section>
-            <section>
-                <h2>The lowly &lt;img&gt; tag</h2>
-                <p>Download and base64-encode all assets into a data:url</p>
-                <ul class="fragment">
-                    <li>Very complex</li>
-                    <li>Memory issues and crashing on mobile devices</li>
+                <ul>
+                    <li class="fragment highlight-red" data-markdown>
+                        <script type="text/template">`<img src="foo.svg">`</script>
+                    </li>
+                    <li class="fragment highlight-red">inline SVG (true inline vs DOMParser)</li>
+                    <li data-markdown class="fragment highlight-blue">
+                        <script type="text/template">`<object>`, `<iframe>`, or `<embed>`</script>
+                    </li>
                 </ul>
-
                 <aside class="notes" data-markdown>
-                    we attempted to load all assets
-                    fonts, styles with ajax
-                    images with new Image() + canvas.toDataURL()
-
-                    and base64 encode (window.btoa()) them into one large data url
-
-                    this was extremely complex, and didn't seem to work very well in all browsers
-
-                    it could be explored further, but probably not work the effort
-
-                    image performance seems to be worse than iframe for some reason (though this could be remedied by caching to canvas)
-
-                    canvas has its own performance issues (re: memory usage), causes crashing on mobile
-
-                    (this is why PDF.js doesn't work well/at all on most mobile devices)
+                    img tag won't work for us. let's take a look at our other options...
                 </aside>
             </section>
-            <section>
-                <h2>OK, &lt;img&gt; tags won't work. Now what?</h2>
-                <div class="fragment">
-                    <p>There are several ways to embed SVG content in HTML:</p>
-                    <ul>
-                        <li class="fragment highlight-red">inline <code>&lt;svg&gt;</code> using DOMParser</li>
-                        <li class="fragment highlight-red"><code>&lt;img&gt;</code></li>
-                        <li><code>&lt;iframe&gt;</code>, <code>&lt;object&gt;</code>, or <code>&lt;embed&gt;</code></li>
-                    </ul>
-                </div>
 
-                <aside class="notes" data-markdown>
-                    No inline SVG, no img tags, let's take a look at our other options...
-                </aside>
-            </section>
+            <!-- IFRAME -->
+
             <section>
                 <h2>Iframe vs Object vs Embed</h2>
 
@@ -366,7 +485,7 @@
 
                     This resolves both the external assets issue (where we need to modify pathnames or add query parameters) and the browser loading indicator issue, because AJAX requests don't cause a spinner.
 
-                    In order to explain this embed method better, I'm going to use some illustrations...
+                    I'm going to use some illustrations to explain a slightly simplified version of this embed method... &rarr;
                 </aside>
             </section>
             <section data-transition="none" class="proxy-example">
@@ -375,7 +494,7 @@
                 <aside class="notes" data-markdown>
                     Here's viewer.js in its nice little Chrome tab
 
-                    Let's assume we have already downloaded the SVG content via AJAX, and modified it as necessary
+                    Let's assume we have already downloaded the SVG content via AJAX, and modified it as necessary, and we are ready to embed the SVG
                 </aside>
             </section>
             <section data-transition="none" class="proxy-example">
@@ -473,9 +592,13 @@
                     After the SVG content is embedded, proxy.svg sends a message back to viewer.js to say that it's finished loading!
                 </aside>
             </section>
-            <section data-transition="none" class="proxy-example">
-                <h2>Proxy.svg.js</h2>
-                <p></p>
+            <section>
+                <div data-markdown data-fragmentize>
+                    ## Proxy.svg.js
+
+                    * Too complicated
+                    * Doesn't work in IE
+                </div>
                 <aside class="notes" data-markdown>
 
                 </aside>

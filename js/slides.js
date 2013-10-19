@@ -96,11 +96,16 @@ function createViewerKeydownHandler(viewer) {
     };
 }
 
-
-
 Demo.add('viewer-example', function () {
     return viewerDemo({
         url: 'assets/documents-reimagined',
+        enableTextSelection: false
+    });
+});
+
+Demo.add('viewer-zooming', function () {
+    return viewerDemo({
+        url: 'assets/box-floor-plan',
         enableTextSelection: false
     });
 });
