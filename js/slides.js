@@ -30,10 +30,18 @@ Reveal.initialize({
     controls: false,
     progress: false,
     history: true,
-    transition: 'fade',
+    transition: 'linear',
+    transitionSpeed: 'fast',
     dependencies:  [
-        { src: 'lib/plugin/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-        { src: 'lib/plugin/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'lib/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { 
+            src: 'lib/plugin/markdown/markdown.js',
+            condition: function() { return !!document.querySelector( '[data-markdown]' ); },
+            callback: function() {
+                [].forEach.call(document.querySelectorAll('*[data-fragmentize] li'), function(ele){ ele.className = 'fragment'; });
+            }
+        },
+        { src: 'lib/plugin/highlight/highlight.js', async: true, callback: function() { window.hljs.initHighlightingOnLoad(); } },
         { src: 'lib/plugin/notes/notes.js' }
     ]
 });
@@ -57,23 +65,46 @@ function viewerDemo(cfg) {
     };
 }
 
+function videoDemo() {
+    var video;
+    return {
+        init: function (el) {
+            video = el.querySelector('video');
+            video.currentTime = 0;
+            video.play();
+        },
+        destroy: function () {
+            video.pause();
+        }
+    };
+}
+
+Demo.add('viewer-example', function () {
+    return viewerDemo({
+        url: 'assets/documents-reimagined',
+        enableTextSelection: false
+    });
+});
+
+
 Demo.add('viewer-inline', function () {
     return viewerDemo({
-        url: '/crocodoc/docviewer/testing/article-realestate',
+        url: 'assets/article-trends',
         embedStrategy: 3,
         enableTextSelection: false,
         zoom: Crocodoc.ZOOM_FIT_HEIGHT
     });
 });
 
-Demo.add('viewer-object', function () {
+Demo.add('viewer-iframe', function () {
     return viewerDemo({
-        url: '/crocodoc/docviewer/testing/article-realestate',
-        embedStrategy: 4,
+        url: 'assets/article-trends',
         enableTextSelection: false,
         zoom: Crocodoc.ZOOM_FIT_HEIGHT
     });
 });
+
+Demo.add('spinner-video', videoDemo);
 
 Demo.add('iframe-vs-inline', function () {
     var $el, $inline, $iframe, top,

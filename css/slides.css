@@ -64,3 +64,7 @@ section[data-demo="iframe-vs-inline"] .demo-container iframe {
     max-width: none;
     max-height: none;
 }
+
+.strikethrough {
+    text-decoration: line-through;
+}
