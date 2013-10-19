@@ -360,14 +360,13 @@
                 <aside class="notes" data-markdown>
                     Proxy.svg was our first attempt at a strategy that not only solves the annoying spinner issue, but also allows us to modify SVG content before it's loaded.
 
-
                     Unfortunately, we came up with the most complicated solution first, but I'll explain how it works, because it's kind of  interesting.
-
-                    In order to explain this embed method, I'm going to show you some cute graphics
 
                     This method involves downloading SVG text via AJAX, modifying the content, and passing it to a child object which then injects the content into itself.
 
                     This resolves both the external assets issue (where we need to modify pathnames or add query parameters) and the browser loading indicator issue, because AJAX requests don't cause a spinner.
+
+                    In order to explain this embed method better, I'm going to use some illustrations...
                 </aside>
             </section>
             <section data-transition="none" class="proxy-example">
@@ -382,7 +381,7 @@
             <section data-transition="none" class="proxy-example">
                 <h2>Proxy.svg.js</h2>
                 <img src="images/proxy-2.svg"/>
-                <p class="" data-markdown>
+                <p data-markdown>
                     <script type="text/template">
                     ```javascript
                     // viewer.js
@@ -400,7 +399,7 @@
             <section data-transition="none" class="proxy-example">
                 <h2>Proxy.svg.js</h2>
                 <img src="images/proxy-3.svg"/>
-                <p class="" data-markdown>
+                <p data-markdown>
                     <script type="text/template">
                     ```javascript
                     // viewer.js
@@ -408,7 +407,7 @@
                     ```
                     </script>
                 </p>
-                <p class="" data-markdown>
+                <p data-markdown>
                     <script type="text/template">
                     ```javascript
                     // proxy.svg.js
@@ -424,7 +423,7 @@
             <section data-transition="none" class="proxy-example">
                 <h2>Proxy.svg.js</h2>
                 <img src="images/proxy-4.svg"/>
-                <p class="" data-markdown>
+                <p data-markdown>
                     <script type="text/template">
                     ```javascript
                     // viewer.js
@@ -443,7 +442,7 @@
             <section data-transition="none" class="proxy-example">
                 <h2>Proxy.svg.js</h2>
                 <img src="images/proxy-5.svg"/>
-                <p class="" data-markdown>
+                <p data-markdown>
                     <script type="text/template">
                     ```javascript
                     // proxy.svg.js
@@ -462,7 +461,7 @@
             <section data-transition="none" class="proxy-example">
                 <h2>Proxy.svg.js</h2>
                 <img src="images/proxy-6.svg"/>
-                <p class="" data-markdown>
+                <p data-markdown>
                     <script type="text/template">
                     ```javascript
                     // proxy.svg.js
@@ -472,6 +471,13 @@
                 </p>
                 <aside class="notes" data-markdown>
                     After the SVG content is embedded, proxy.svg sends a message back to viewer.js to say that it's finished loading!
+                </aside>
+            </section>
+            <section data-transition="none" class="proxy-example">
+                <h2>Proxy.svg.js</h2>
+                <p></p>
+                <aside class="notes" data-markdown>
+
                 </aside>
             </section>
         </div>

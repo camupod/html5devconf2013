@@ -53,14 +53,19 @@ Reveal.addEventListener('slidechanged', function (ev) {
 });
 
 function viewerDemo(cfg) {
-    var viewer;
+    var viewer,
+        handler;
+
     return {
         init: function (el) {
             viewer = Crocodoc.createViewer($(el).find('.demo-viewer'), cfg);
             viewer.load();
+            handler = createViewerKeydownHandler(viewer);
+            $(window).on('keydown', handler);
         },
         destroy: function () {
             viewer.destroy();
+            $(window).off('keydown', handler);
         }
     };
 }
@@ -78,6 +83,20 @@ function videoDemo() {
         }
     };
 }
+
+function createViewerKeydownHandler(viewer) {
+    return function (ev) {
+        if (!ev.metaKey) return true;
+        else if (ev.keyCode === 48) viewer.zoom(1);
+        else if (ev.keyCode === 189) viewer.zoom('out');
+        else if (ev.keyCode === 187) viewer.zoom('in');
+        else return true;
+        ev.preventDefault();
+        return false;
+    };
+}
+
+
 
 Demo.add('viewer-example', function () {
     return viewerDemo({

@@ -46,10 +46,7 @@ div.logos {
     height: 600px
 }
 .demo-viewer .crocodoc-page {
-    padding: 20px 100px;
-}
-.demo-viewer {
-    background: black;
+    padding: 20px 40px;
 }
 
 .crocodoc-viewer {
