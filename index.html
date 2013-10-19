@@ -20,7 +20,6 @@
 
                 <br/>
                 <p>Cameron Lakenen &ndash; Box</p>
-                <small>@lakenen</small>
             </section>
             <section>
                 The Box View API (formerly Crocodoc) is a service for generating portable, web-viewable versions of documents
@@ -70,7 +69,7 @@
                     <script type="text/template">
                     ## Why SVG?
 
-                    * Provides functionality not currently possible with just HTML/CSS
+                    * Provides functionality not available in HTML / CSS
                     * Converted assets are standard, portable, and lightweight
                     * Rendering fidelity is incredibly high
                     </script>
@@ -124,9 +123,9 @@
             <section>
                 <div data-markdown data-fragmentize>
                     <script type="text/template">
-                    ## Embed methods and their problems
+                    ## Embedding issues
 
-                    * Performance and stability (#perfmatters!)
+                    * Performance and stability ([#perfmatters](https://twitter.com/search?q=%23perfmatters&src=hash)!)
                     * Externally linked assets
                     * Browser loading indicator
 
@@ -135,8 +134,8 @@
                 <aside class="notes" data-markdown>
                     Each embed method has different implications regarding
                     * performance and stability
-                      * regarding rendering and layout performance, what it means for UI/scrolling/zooming peformance
-                      * mobile stability re: crashing and memory issues
+                      * rendering and layout performance, what it means for UI/scrolling/zooming peformance
+                      * mobile stability and crashing and memory issues
                     * ability to load external assets or modify SVG content on the fly
                       * necessary for us because in some cases we need to rewrite relative paths to referenced assets in SVG or add queryString params for authentication and authorization purposes
                     * causing the native browser loading indicator
@@ -144,9 +143,19 @@
                 </aside>
             </section>
 
+            <section>
+                <h2>Performance and Stability</h2>
+                <aside class="notes" data-markdown>
+                    By far the biggest issue we face with SVG is performance. Some documents can be very complex, and therefore result in complex SVG files. We do as much as we can in the conversion process to reduce complexity for both file size and rendering performance reasons, but there is only so much that can be done without affecting rendering quality.
+
+
+                </aside>
+            </section>
+
             <section data-demo="spinner-video">
+                <h2>The Dreaded Spinner</h2>
                 <video src="assets/spinner.m4v" loop></video>
-                <p data-markdown>
+                <p class="" data-markdown>
                     <script type="text/template">
                     ```html
                     <object type="image/svg+xml" data="foo.svg"></object>
@@ -345,18 +354,130 @@
             <section>
                 <h2>Proxy<span class="fragment" data-fragment-index="1">.svg</span><span class="fragment" data-fragment-index="2">.js</span></h2>
 
-                <p class="fragment" data-fragment-index="1">proxy.svg: an SVG file with some embedded JS</p>
-                <p class="fragment" data-fragment-index="2">proxy.svg.js: an JS file with some embedded SVG that has some embedded JS</p>
+                <p class="fragment" data-fragment-index="1">proxy.svg: <em>an SVG file with some embedded JS</em></p>
+                <p class="fragment" data-fragment-index="2">proxy.svg.js: <em>a JS file containing some SVG text that has some embedded JS</em></p>
 
                 <aside class="notes" data-markdown>
-                    Proxy.svg was our first attempt at a strategy that involves downloading SVG text via AJAX, modifying the content, and passing it to a child frame or object which then injects the content into itself. This resolves both the external assets issue (where we need to modify pathnames) and the browser loading indicator issue, because AJAX requests don't cause a spinner.
+                    Proxy.svg was our first attempt at a strategy that not only solves the annoying spinner issue, but also allows us to modify SVG content before it's loaded.
 
-                    Unfortunately, we came up with the most complicated solution first, but I'll explain how it works, because it's quite interesting.
+
+                    Unfortunately, we came up with the most complicated solution first, but I'll explain how it works, because it's kind of  interesting.
+
+                    In order to explain this embed method, I'm going to show you some cute graphics
+
+                    This method involves downloading SVG text via AJAX, modifying the content, and passing it to a child object which then injects the content into itself.
+
+                    This resolves both the external assets issue (where we need to modify pathnames or add query parameters) and the browser loading indicator issue, because AJAX requests don't cause a spinner.
                 </aside>
             </section>
-            <section>
+            <section data-transition="none" class="proxy-example">
+                <h2>Proxy.svg.js</h2>
+                <img src="images/proxy-1.svg"/>
+                <aside class="notes" data-markdown>
+                    Here's viewer.js in its nice little Chrome tab
 
+                    Let's assume we have already downloaded the SVG content via AJAX, and modified it as necessary
+                </aside>
             </section>
+            <section data-transition="none" class="proxy-example">
+                <h2>Proxy.svg.js</h2>
+                <img src="images/proxy-2.svg"/>
+                <p class="" data-markdown>
+                    <script type="text/template">
+                    ```javascript
+                    // viewer.js
+                    var svgElement = document.createElement('object');
+                    svgElement.type = 'image/svg+xml';
+                    svgElement.data = 'data:image/svg+xml;base64,' + btoa(proxySVG);
+                    pageElement.appendChild(svgElement);
+                    ```
+                    </script>
+                </p>
+                <aside class="notes" data-markdown>
+                    Viewer.js embeds a child object via base64-encoded data:url of the proxy.svg container and scripts
+                </aside>
+            </section>
+            <section data-transition="none" class="proxy-example">
+                <h2>Proxy.svg.js</h2>
+                <img src="images/proxy-3.svg"/>
+                <p class="" data-markdown>
+                    <script type="text/template">
+                    ```javascript
+                    // viewer.js
+                    window.addEventListener('message', handleProxyReadyMessage);
+                    ```
+                    </script>
+                </p>
+                <p class="" data-markdown>
+                    <script type="text/template">
+                    ```javascript
+                    // proxy.svg.js
+                    window.parent.postMessage('ready', '*');
+                    window.addEventListener('message', handleViewerMessage);
+                    ```
+                    </script>
+                </p>
+                <aside class="notes" data-markdown>
+                    The proxy.svg script runs inside the newly created object, using the postMessage API to send a mesage to viewer.js in the parent window to alert the viewer that it has loaded and is ready to accept SVG content
+                </aside>
+            </section>
+            <section data-transition="none" class="proxy-example">
+                <h2>Proxy.svg.js</h2>
+                <img src="images/proxy-4.svg"/>
+                <p class="" data-markdown>
+                    <script type="text/template">
+                    ```javascript
+                    // viewer.js
+                    function handleProxyReadyMessage(event) {
+                        if (event.data === 'ready') {
+                            svgElement.contentWindow.postMessage(svgContent, '*');
+                        }
+                    }
+                    ```
+                    </script>
+                </p>
+                <aside class="notes" data-markdown>
+                    Viewer.js receives the message, and sends a message back containing the SVG content
+                </aside>
+            </section>
+            <section data-transition="none" class="proxy-example">
+                <h2>Proxy.svg.js</h2>
+                <img src="images/proxy-5.svg"/>
+                <p class="" data-markdown>
+                    <script type="text/template">
+                    ```javascript
+                    // proxy.svg.js
+                    function handleViewerMessage(event) {
+                        if (event.data) {
+                            embedSVG(event.data);
+                        }
+                    }
+                    ```
+                    </script>
+                </p>
+                <aside class="notes" data-markdown>
+                    The object embeds the SVG content directly into its documentElement using DOMParser and importNode
+                </aside>
+            </section>
+            <section data-transition="none" class="proxy-example">
+                <h2>Proxy.svg.js</h2>
+                <img src="images/proxy-6.svg"/>
+                <p class="" data-markdown>
+                    <script type="text/template">
+                    ```javascript
+                    // proxy.svg.js
+                    window.parent.postMessage('loaded', '*');
+                    ```
+                    </script>
+                </p>
+                <aside class="notes" data-markdown>
+                    After the SVG content is embedded, proxy.svg sends a message back to viewer.js to say that it's finished loading!
+                </aside>
+            </section>
+        </div>
+
+        <div class="footer">
+            <a href="https://twitter.com/lakenen">@lakenen</a><a href="https://twitter.com/search?q=%23html5devconf&src=hash">#html5devconf</a>
         </div>
     </div>
 
