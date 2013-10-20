@@ -33,17 +33,24 @@ Reveal.initialize({
     transition: 'linear',
     transitionSpeed: 'fast',
     dependencies:  [
-        { src: 'lib/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
         { 
-            src: 'lib/plugin/markdown/markdown.js',
+            src: 'plugin/markdown/markdown.js',
             condition: function() { return !!document.querySelector( '[data-markdown]' ); },
             callback: function() {
                 [].forEach.call(document.querySelectorAll('*[data-fragmentize] li'), function(ele){ ele.className = 'fragment'; });
             }
         },
-        { src: 'lib/plugin/highlight/highlight.js', async: true, callback: function() { window.hljs.initHighlightingOnLoad(); } },
-        { src: 'lib/plugin/notes/notes.js' }
+        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { window.hljs.initHighlightingOnLoad(); } },
+        { src: 'plugin/notes/notes.js' }
     ]
+});
+
+Reveal.addEventListener('ready', function (ev) {
+    // only do this for slide 0
+    if (window.parent === window && ev.indexh === 0) {
+        Demo.load(ev.currentSlide, ev.currentSlide.dataset.demo);
+    }
 });
 
 Reveal.addEventListener('slidechanged', function (ev) {
@@ -86,13 +93,13 @@ function videoDemo() {
 
 function createViewerKeydownHandler(viewer) {
     return function (ev) {
-        if (!ev.metaKey) return true;
-        else if (ev.keyCode === 48) viewer.zoom(1);
-        else if (ev.keyCode === 189) viewer.zoom('out');
-        else if (ev.keyCode === 187) viewer.zoom('in');
-        else return true;
-        ev.preventDefault();
-        return false;
+        if (ev.metaKey) {
+            if (ev.keyCode === 48) viewer.zoom(1);
+            else if (ev.keyCode === 189) viewer.zoom('out');
+            else if (ev.keyCode === 187) viewer.zoom('in');
+            else return;
+            return false;
+        }
     };
 }
 
@@ -169,4 +176,21 @@ Demo.add('iframe-vs-inline', function () {
             console.log(label, time);
         }
     };
+});
+
+Demo.add('contact', function () {
+    return {
+        init: function () {
+            $(document.body).addClass('contact');
+        },
+        destroy: function () {
+            $(document.body).removeClass('contact');
+        }
+    };
+});
+
+window.addEventListener('keydown', function (ev) {
+    if (ev.keyCode === 83) {
+        RevealNotes.open();
+    }
 });
