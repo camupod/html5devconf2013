@@ -505,7 +505,17 @@
 
                 <p class="fragment" data-fragment-index="1">proxy.svg: <em>an SVG file with some embedded JS</em></p>
                 <p class="fragment" data-fragment-index="2">proxy.svg.js: <em>a JS file containing some SVG text that has some embedded JS</em></p>
-
+                <p>
+<pre class="fragment" data-fragment-index="3"><code data-trim>
+&lt;svg version="1.1" xmlns="http://www.w3.org/2000/svg"&gt;
+    &lt;script&gt;
+    &lt;![CDATA[
+        /* proxy JS code */
+    ]]&gt;
+    &lt;/script&gt;
+&lt;/svg&gt;
+</code></pre>
+                </p>
                 <aside class="notes" data-markdown>
                     Proxy.svg was our first attempt at a strategy that not only solves the annoying spinner issue, but also allows us to modify SVG content before it's loaded.
 
