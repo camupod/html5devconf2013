@@ -55,6 +55,8 @@ Reveal.addEventListener('ready', function (ev) {
             // hack to remove contact style if not reloaded on slide 0... too lazy to do this better
             Demo.demos.contact.destroy();
         }
+    } else {
+        Demo.demos.contact.destroy();
     }
 });
 
