@@ -48,8 +48,13 @@ Reveal.initialize({
 
 Reveal.addEventListener('ready', function (ev) {
     // only do this for slide 0
-    if (window.parent === window && ev.indexh === 0) {
-        Demo.load(ev.currentSlide, ev.currentSlide.dataset.demo);
+    if (window.parent === window) {
+        if (ev.indexh === 0) {
+            Demo.load(ev.currentSlide, ev.currentSlide.dataset.demo);
+        } else {
+            // hack to remove contact style if not reloaded on slide 0... too lazy to do this better
+            Demo.demos.contact.destroy();
+        }
     }
 });
 
