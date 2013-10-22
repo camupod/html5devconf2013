@@ -18,18 +18,36 @@
 
                 <br/>
                 <p>Cameron Lakenen &ndash; Box</p>
+
+
                 <aside class="notes" data-markdown>
+                    Cameron Lakenen
+
+                    Engineer at Box
+
+                    Preview and View API on document viewing stratgey in the brwoser
+
+                    aventures in SVG&rarr;
+                </aside>
+                <!-- <aside class="notes" data-markdown>
                     Hi, my name is Cameron Lakenen, and I'm an engineer at Box, where I work on the new preview experience and the Box View API, *specifically* on the document viewing strategy in the browser.
 
                     I'm here to talk to you about my adventures in SVG over the past year &rarr;
-                </aside>
+                </aside> -->
             </section>
+
             <section>
                 The Box View API (formerly Crocodoc) is a service for generating portable, web-viewable versions of documents
                 <aside class="notes" data-markdown>
-                    The new Box preview and View API both use Crocodoc's HTML5 document conversion technology to render documents in the browser. My main focus is building a world-class document viewer on top of this technology. &rarr;
+                    Preview and View API use Crocodoc
+
+                    world-class document viewer &rarr;
                 </aside>
+                <!-- <aside class="notes" data-markdown>
+                    The new Box preview and View API both use Crocodoc's HTML5 document conversion technology to render documents in the browser. My main focus is building a world-class document viewer on top of this technology. &rarr;
+                </aside> -->
             </section>
+
             <section data-demo="viewer-example">
                 <div class="demo-viewer"></div>
 
@@ -49,11 +67,11 @@
                 </div>
 
                 <aside class="notes" data-markdown>
-                    Our document rendering strategy is based on HTML5 &rarr;
+                    rendering strategy is based on HTML5 &rarr;
 
-                    CSS3 &rarr;
+                    CSS &rarr;
 
-                    and (as you might have guessed) SVG &rarr;
+                    and SVG &rarr;
                 </aside>
             </section>
             <section>
@@ -62,8 +80,9 @@
                 <p data-markdown>*Can't you do everything with HTML + CSS?*</p>
 
                 <aside class="notes" data-markdown>
-                    HTML5 is awesome, you can do so much with it!
-                    Unfortunately, aside from rendering to a canvas, it's not possible to use only HTML &rarr;
+                    HTML5 is great
+
+                    aside from canvas it's not enough &rarr;
                 </aside>
             </section>
             <section>
@@ -88,9 +107,9 @@
 
                     Converted assets are all based on web standards, so they will *just work* in all standards-compliant browsers. Many other platforms are capable of interpreting and rendering SVG as well
 
-                    Furthermore, SVG is simply XML, *just a text file*, so it compresses very well on the wire, which is especially important for mobile &rarr;
+                    Furthermore, SVG is simply XML, *just a text file*, so it compresses very well on the wire, which is particularly important for mobile &rarr;
 
-                    SVGs can also have impeccable quality, with essentially infinite zooming that retains crisp edges &rarr;
+                    SVGs can also have impeccable quality, with infinite zooming that retains crisp edges &rarr;
                 </aside>
             </section>
 
@@ -115,7 +134,7 @@
                 <div class="demo-viewer"></div>
 
                 <aside class="notes" data-markdown>
-                    SVG is terrific at zooming. The name, after all is "scalable vector graphics". As long as your content isn't composed completely of jpegs or pngs, SVGs will scale infinitely and retain their crispness at any zoom level. &rarr;
+                    SVG is terrific at zooming. The name, after all is "scalable vector graphics". As long as your content isn't composed completely of rasterized images, SVG files can scale infinitely and retain their crispness at any zoom level. &rarr;
                 </aside>
             </section>
 
@@ -139,7 +158,7 @@
 
                     even though most of the time our SVG assets are embedded dynamically using JS, it's not absolutely necessary.
 
-                    SVG can be embedded as-is without JS. Canvas implementations would *necessarily* require JS, and are thus less portable
+                    SVG can be embedded as-is without JS, wheareas JS is necessary for Canvas implementations and are thus less portable
 
                     rendering to canvas requires either parsing and interpreting the document in JS or converting it to some set of operations beforehand that JS can then use to draw to a canvas. &rarr;
 
@@ -209,6 +228,7 @@
                     <script type="text/template">
                     ## Performance and Stability
 
+                    * SVG complexity
                     * Lazyloading + scrolling and zooming performance
                     * Crashing mobile browsers (\*cough\* iOS)
                     </script>
@@ -236,9 +256,9 @@
                 </div>
 
                 <aside class="notes" data-markdown>
-                    For performance reasons, converted SVG assets link to common external resources (like images, fonts, stylesheets)
+                    For performance reasons, converted SVG assets link to common external resources (like images, fonts, stylesheets) &rarr;
 
-                    external assets are great for re-using resources like fonts across multiple svg files &rarr;
+                    external assets are great for re-using resources like fonts across multiple svg files
 
                     it is possible to base64 encode these assets, which we do to some degree, but although *images* are not commonly reused across pages, fonts are often used across many or all pages.
 
@@ -336,9 +356,7 @@
                 <small class="fragment" data-fragment-index="1" data-markdown>https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions</small>
 
                 <aside class="notes" data-markdown>
-                    Among other things, external assets aren't loaded when embedded with img tag (for security reasons) &rarr;
-
-                    For performane reasons, like I mentioned before, our converted SVG files reference external assets (eg, fonts, images) &rarr;
+                    Unfortunately, external assets aren't loaded when embedded with img tag (for security reasons) &rarr;
                 </aside>
             </section>
             <section>
@@ -441,7 +459,7 @@
                 </aside>
             </section>
 
-            <!-- IE9 stuff.. might remove this -->
+            <!-- IE9 stuff.. might remove this
             <section>
                 <h2>Inline SVG and IE 9</h2>
                 <ul>
@@ -462,7 +480,7 @@
 
                     There is no document.importNode in IE 9, but luckily there's a relatively simple shim for it, which involes traversing the DOM tree and essentially making a copy of each node in the tree
                 </aside>
-            </section>
+            </section> -->
             <section>
                 <h2>Embed methods</h2>
 
@@ -498,32 +516,57 @@
                 </aside>
             </section>
 
+            <section>
+                <div data-markdown data-fragmentize>
+                ## Basic embed via iframe/object
+
+                * Spinner :(
+                * Can't modify text before loading
+
+                ```html
+                &lt;iframe type="text/svg+xml" src="page-1.svg"&gt;&lt;/iframe&gt;
+                &lt;object type="text/svg+xml" data="page-1.svg"&gt;&lt;/object&gt;
+                ```
+                </div>
+
+                <aside class="notes" data-markdown>
+                    Unfortunately, embedding SVG with the iframe or object tags directly doesn't solve our problems, although performance is great. &rarr;
+
+                    There's still a spinner every time you load a page &rarr;
+
+                    It's not possible to modify content before it's loaded, because the iframe/object requests the svg file directly &rarr;
+                </aside>
+            </section>
+
             <!-- proxy.svg -->
 
             <section>
-                <h2>Proxy<span class="fragment" data-fragment-index="1">.svg</span><span class="fragment" data-fragment-index="2">.js</span></h2>
+                <h2>Proxy-SVG</h2>
 
-                <p class="fragment" data-fragment-index="1">proxy.svg: <em>an SVG file with some embedded JS</em></p>
-                <p class="fragment" data-fragment-index="2">proxy.svg.js: <em>a JS file containing some SVG text that has some embedded JS</em></p>
-                <p>
-<pre class="fragment" data-fragment-index="3"><code data-trim>
-&lt;svg version="1.1" xmlns="http://www.w3.org/2000/svg"&gt;
-    &lt;script&gt;
-    &lt;![CDATA[
-        /* proxy JS code */
-    ]]&gt;
-    &lt;/script&gt;
-&lt;/svg&gt;
+                <p>Embed object as a tiny SVG that contains a bit of JS</p>
+
+<pre class="fragment"><code class="javascript" data-trim>
+// proxy-svg.js
+
+function proxyScript() {
+    /* proxy JS code */
+}
+
+var SVG = '&lt;svg version="1.1" xmlns="http://www.w3.org/2000/svg"&gt;' +
+    '&lt;script&gt;&lt;![CDATA[(' + proxyScript.toString() + ')()]]&gt;&lt;/script&gt;' +
+    '&lt;/svg&gt;';
+
+var object = document.createElement('object');
+object.type = 'image/svg+xml';
+object.data = 'data:image/svg+xml;base64,' + window.btoa(SVG);
 </code></pre>
-                </p>
+
                 <aside class="notes" data-markdown>
-                    Proxy.svg was our first attempt at a strategy that not only solves the annoying spinner issue, but also allows us to modify SVG content before it's loaded.
+                    Proxy-svg was our first attempt at an iframe/object-based embed strategy that not only solves the annoying spinner issue, but also allows us to modify SVG content before it's loaded.
 
                     Unfortunately, we came up with the most complicated solution first, but I'll explain how it works, because it's kind of  interesting.
 
                     This method involves downloading SVG text via AJAX, modifying the content, and passing it to a child object which then injects the content into itself.
-
-                    This resolves both the external assets issue (where we need to modify pathnames or add query parameters) and the browser loading indicator issue, because AJAX requests don't cause a spinner.
 
                     I'm going to use some illustrations to explain a slightly simplified version of this embed method... &rarr;
                 </aside>
@@ -637,7 +680,7 @@
                     ## Proxy.svg.js
 
                     * Too complicated
-                    * Doesn't work in IE
+                    * Doesn't work in IE (no scripts in data:urls)
                 </div>
                 <aside class="notes" data-markdown>
                     Proxy.svg was a very interesting solution &rarr;
@@ -705,14 +748,14 @@
             <!-- direct proxy -->
 
             <section>
-                <div data-markdown data-fragmentize>
-                    ## "Direct Proxy"
+                <h2>"Direct Proxy"</h2>
 
-                    * Combination of Proxy.svg and document.write() methods
-                    * Safari - create an iframe, write a script with document.write()
-                    * Firefox - create an object with data:url encoded script
-                    * Call script directly from parent window (viewer.js)
-                </div>
+                <ul>
+                    <li class="fragment" data-fragment-inedx="1">Combination of Proxy.svg and document.write() methods</li>
+                    <li class="fragment" data-fragment-inedx="2">Safari - create an iframe, write a script with document.write()</li>
+                    <li class="fragment" data-fragment-inedx="2">Firefox - create an object with data:url encoded script</li>
+                    <li class="fragment" data-fragment-inedx="3">Call script directly from parent window (viewer.js)</li>
+                </ul>
                 <aside class="notes" data-markdown>
                     In order to get around the bugs in Firefox and Safari, we had to come up with yet another solution, which I call, for lack of a better name "direct proxy" &rarr;
 
