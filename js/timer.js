@@ -1,3 +1,7 @@
+/**
+ * Timer that uses window.performance if available, works in child frames using postMessage
+ */
+
 window.Timer = (function () {
 
     var Timer = {
@@ -31,7 +35,7 @@ window.Timer = (function () {
                 this.handlers[label] = [];
             }
             this.handlers[label].push(cb);
-            
+
             // trigger it now if available
             if (this.stopTime[label]) {
                 cb(label, this.getElapsed(label));

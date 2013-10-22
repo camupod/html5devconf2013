@@ -1,5 +1,3 @@
-
-
 var Demo = {
     demos: {},
     currentDemo: null,
@@ -209,6 +207,7 @@ Demo.add('boxercopter', function () {
     };
 });
 
+// open notes with the S key
 window.addEventListener('keydown', function (ev) {
     if (ev.keyCode === 83) {
         RevealNotes.open();

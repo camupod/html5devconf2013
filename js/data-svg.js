@@ -1,4 +1,14 @@
+/**
+ * Find all elements in the dom (or the given element) with data-svg-[type]="foo.svg"
+ * and embed the given svg into the element with the named method [type].
+ *
+ * Supported types are inline and iframe
+ *
+ * e.g., <div data-svg-inline="foo.svg"></div> will embed foo.svg inline into the div
+ */
+
 function svgify(element, type) {
+    // embed types available
     var embedType = {
         iframe: function (elem) {
             var src = elem.dataset.svgIframe;
