@@ -18,6 +18,7 @@
 
                 <br/>
                 <p>Cameron Lakenen &ndash; Box</p>
+                <small data-markdown>http://camupod.com/html5devconf2013</small>
 
 
                 <aside class="notes" data-markdown>
@@ -258,7 +259,7 @@
                     <script type="text/template">
                     ## External Assets
 
-                    * Converted assets reference common fonts, images, etc
+                    * Converted assets reference common fonts, styles
                     * Possible to base64-encode, but bad for performance
                     * Modify content on the fly
                     </script>
@@ -842,9 +843,9 @@ object.data = 'data:image/svg+xml;base64,' + window.btoa(SVG);
                     <script type="text/template">
                     ```javascript
                     var iframe = document.createElement('iframe');
-                    iframe.open();
-                    iframe.write(proxyScript);
-                    iframe.close();
+                    iframe.contentDocument.open();
+                    iframe.contentDocument.write(proxyScript);
+                    iframe.contentDocument.close();
                     iframe.onload = function () {
                         iframe.contentWindow.loadSVG(svgContent);
                     };
