@@ -196,6 +196,19 @@ Demo.add('contact', function () {
     };
 });
 
+Demo.add('boxercopter', function () {
+    var $frame;
+    return {
+        init: function (el) {
+            $frame = $('<iframe src="../boxercopter.com">');
+            $(el).find('.demo-container').append($frame);
+        },
+        destroy: function () {
+            $frame.remove();
+        }
+    };
+});
+
 window.addEventListener('keydown', function (ev) {
     if (ev.keyCode === 83) {
         RevealNotes.open();

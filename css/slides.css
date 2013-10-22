@@ -97,6 +97,18 @@ section.proxy-example {
 section.proxy-example img {
     height: 380px;
 }
+section[data-demo="boxercopter"] .demo-container {
+    margin: 0 auto;
+}
+section[data-demo="boxercopter"] .demo-container iframe {
+    -webkit-transform: scale(0.5);
+    -webkit-transform-origin: 0 0;
+    transform: scale(0.5);
+    transform-origin: 0 0;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+}
 
 .footer {
     position: absolute;
